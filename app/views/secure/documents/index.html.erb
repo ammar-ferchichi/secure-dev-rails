@@ -1,0 +1,10 @@
+<h1>Documents</h1>
+<%= form_with url: request.path, method: :get do |f| %>
+  <%= f.text_field :q, value: params[:q], placeholder: "Search by title" %>
+  <%= f.submit "Search" %>
+<% end %>
+<ul>
+  <% @documents.each do |document| %>
+    <li><%= document.title %> (owner #<%= document.user_id %>) — <%= link_to "open", secure_document_path(document) %></li>
+  <% end %>
+</ul>

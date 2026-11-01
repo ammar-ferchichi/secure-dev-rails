@@ -1,0 +1,16 @@
+<h1>SecureDev Rails</h1>
+<p>Each OWASP Top 10 risk below has an intentionally <strong>vulnerable</strong> endpoint and a <strong>secure</strong> one.
+Automated tests in <code>test/integration/</code> prove the attack works on the first and fails on the second.</p>
+
+<% if authenticated? %>
+  <ul>
+    <li><%= link_to "My documents (secure)", secure_documents_path %></li>
+    <li><%= link_to "My profile (secure)", secure_profile_path %></li>
+    <% if VulnerableDemos.enabled? %>
+      <li><%= link_to "Search documents (VULNERABLE: SQL injection)", vulnerable_documents_path %></li>
+    <% end %>
+  </ul>
+  <%= button_to "Sign out", session_path, method: :delete %>
+<% else %>
+  <p><%= link_to "Sign in", new_session_path %> (seed users: alice@example.com / bob@example.com, password: password123)</p>
+<% end %>

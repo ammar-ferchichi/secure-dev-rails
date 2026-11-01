@@ -1,0 +1,3 @@
+<h1><%= @document.title %></h1>
+<%# A03 XSS — fixed: ERB escapes output by default, so <script> is rendered as text. %>
+<div class="body"><%= @document.body %></div>

@@ -1,0 +1,3 @@
+<h1><%= @document.title %></h1>
+<%# INTENTIONALLY VULNERABLE — A03 stored XSS: raw outputs user content without escaping. %>
+<div class="body"><%= raw @document.body %></div>

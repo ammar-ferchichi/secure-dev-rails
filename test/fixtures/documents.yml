@@ -1,0 +1,14 @@
+alice_notes:
+  user: alice
+  title: Alice notes
+  body: Alice's private notes.
+
+bob_salary:
+  user: bob
+  title: Bob salary
+  body: Bob's confidential salary slip.
+
+bob_xss:
+  user: bob
+  title: Bob comment
+  body: <script>alert("XSS")</script>Nice post!

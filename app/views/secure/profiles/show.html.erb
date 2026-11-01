@@ -1,0 +1,7 @@
+<h1>Profile</h1>
+<p>Email: <%= Current.user.email_address %> — role: <strong><%= Current.user.role %></strong></p>
+<%= form_with model: Current.user, url: secure_profile_path, method: :patch do |f| %>
+  <%= f.label :display_name %>
+  <%= f.text_field :display_name %>
+  <%= f.submit "Save" %>
+<% end %>

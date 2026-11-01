@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  scan_ruby:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Secure code must have zero Brakeman warnings
+        run: bin/brakeman --no-pager --skip-files app/controllers/vulnerable/,app/views/vulnerable/
+
+      - name: Brakeman must detect the intentional vulnerabilities
+        run: |
+          bin/brakeman --no-pager --no-exit-on-warn -q -f json -o tmp/brakeman.json
+          ruby -rjson -e '
+            found = JSON.parse(File.read("tmp/brakeman.json"))["warnings"].map { |w| w["warning_type"] }.uniq.sort
+            expected = ["Cross-Site Scripting", "Mass Assignment", "SQL Injection"]
+            abort("Expected #{expected}, got #{found}") unless (expected - found).empty?
+            puts "Brakeman detected: #{found.join(", ")}"
+          '
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Lint code for consistent style
+        run: bin/rubocop -f github
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:test:prepare test
+
